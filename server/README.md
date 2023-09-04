@@ -1,44 +1,71 @@
 # QueryDesk Server
 
-create k8s secret
+Instructions for running self hosted install of QueryDesk. Currently only k8s install is supported, reach out to support@querydesk.com if you would like additional methods supported.
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: querydesk
-  namespace: querydesk
-type: Opaque
-data:
-  # REQUIRED
+*Requires Enterprise plan.*
 
-  CLOAK_KEY_V1: # 32 random bytes base64 encoded (used for encrypting senstive fields in the database)
-  DB_PASSWORD: 
-  LICENSE_KEY: # provided as part of subscription
-  SECRET_KEY_BASE: # generate random secure value
+## Installation
 
-  # OPTIONAL
+1. Get an api key from https://app.querydesk.com/settings/api-keys
 
-  # Database SSL
-  ca.cert:
-  client.key:
-  client.cert:
+1. Setup a postgres database and take note of credentials.
 
-  # Google auth provider
-  GOOGLE_CLIENT_ID:
-  GOOGLE_CLIENT_SECRET:
+1. create k8s secret
 
-  # GitHub auth provider
-  GITHUB_CLIENT_ID:
-  GITHUB_CLIENT_SECRET:
+    ```yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: querydesk
+      namespace: querydesk
+    type: Opaque
+    data:
+      ### REQUIRED ###
 
-  # OIDC auth provider
-  OIDC_DISCOVERY_DOCUMENT_URI:
-  OIDC_CLIENT_ID:
-  OIDC_CLIENT_SECRET:
-```
+      CLOAK_KEY_V1: # 32 random bytes base64 encoded (used for encrypting senstive fields in the database)
+      DB_PASSWORD: 
+      LICENSE_KEY: # use api key created in first step
+      SECRET_KEY_BASE: # generate random secure value
+
+      ### OPTIONAL ###
+
+      # Database SSL (if enabled)
+      ca.cert:
+      client.key:
+      client.cert:
+
+      # Google auth provider
+      GOOGLE_CLIENT_ID:
+      GOOGLE_CLIENT_SECRET:
+
+      # GitHub auth provider
+      GITHUB_CLIENT_ID:
+      GITHUB_CLIENT_SECRET:
+
+      # OIDC auth provider
+      OIDC_DISCOVERY_DOCUMENT_URI:
+      OIDC_CLIENT_ID:
+      OIDC_CLIENT_SECRET:
+    ```
+
+1. Install with helm
+
+    ```bash
+    # make sure to use helm 3.8.0 or later, or set `export HELM_EXPERIMENTAL_OCI=1`
+    helm install querydesk oci://ghcr.io/querydesk/helm-charts/server --version x.x.x \
+      --set querydesk.configSecretName=querydesk \
+      --set env.DB_HOSTNAME=${database IP from earlier setup} \
+      --set env.DB_USERNAME=${username to use to connect to database} \
+      --set env.DB_SSL=true \ # if you want to enable SSL
+      --set env.HOST=${url where your install will be accessible, for example app.querydesk.com} \
+      --namespace querydesk
+    ```
 
 ## Changelog
+
+### 1.3.2
+
+fix: Handle license renewal
 
 ### 1.3.0
 
