@@ -29,6 +29,8 @@ Instructions for running self hosted install of QueryDesk. Currently only k8s in
 
       ### OPTIONAL ###
 
+      SLACK_WEBHOOK_URL: # if you want to enable slack notifications
+
       # Database SSL (if enabled)
       ca.cert:
       client.key:
