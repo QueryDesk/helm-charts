@@ -10,7 +10,7 @@ Instructions for running self hosted install of QueryDesk. Currently only k8s in
 
 1. Setup a postgres database and take note of credentials.
 
-1. create k8s secret
+1. create k8s secret (or see [example terraform](../examples/server.tf))
 
     ```yaml
     apiVersion: v1
