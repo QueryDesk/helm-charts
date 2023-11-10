@@ -73,8 +73,6 @@ resource "kubernetes_secret_v1" "querydesk" {
     SECRET_KEY_BASE = random_password.querydesk_secret_key_base.result
 
     # optional secrets
-    SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/xxx/xxx/xxx"
-
     OIDC_CLIENT_ID              = azuread_application.querydesk.application_id
     OIDC_CLIENT_SECRET          = azuread_application_password.querydesk_client_secret.value
     OIDC_DISCOVERY_DOCUMENT_URI = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/v2.0/.well-known/openid-configuration?appid=${azuread_application.querydesk.application_id}"
